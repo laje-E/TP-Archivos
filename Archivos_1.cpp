@@ -1,32 +1,36 @@
 #include <stdio.h>
 #include <string.h>
 void ingreso_datos (char apellido [20], char nombre [20], char DNI [9]);
-void buscar_datos (char apellido [20], char nombre [20], char DNI [9]);
+void buscar_DNI (char apellido [20], char nombre [20], char DNI [9]);
+void bus_nombre_apellido (char apellido [20], char nombre [20], char DNI [9]);
 int main (int argc, char **argv) {
     char apellido [20];
 	char nombre [20];
 	char DNI [8];
     int opcion;
-    printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI ");
+    printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI | 3= buscar nombre o apellido");
     scanf ("%d", &opcion);
     while (opcion != 0){
         switch (opcion){
     
-        case 0:
-            return 0;
-            break;
+            case 0:
+                return 0;
+                break;
     
-        case 1:
-            ingreso_datos(apellido, nombre, DNI);
-            break;
+            case 1:
+                ingreso_datos(apellido, nombre, DNI);
+                break;
     
-        case 2:
-            buscar_datos(apellido, nombre, DNI);
-            break;
-    
+            case 2:
+                buscar_DNI(apellido, nombre, DNI);
+                break;
+            
+            case 3:
+                bus_nombre_apellido(apellido, nombre, DNI);
+                break;
         }
         
-        printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI ");
+        printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI | 3= buscar nombre o apellido");
 	    scanf ("%d", &opcion);
     }
     return 0;
@@ -79,7 +83,7 @@ int main (int argc, char **argv) {
 	
     }
     
-    void buscar_datos (char apellido [20], char nombre [20], char DNI [9]) {
+    void buscar_DNI (char apellido [20], char nombre [20], char DNI [9]) {
 	
 	char busqueda [9];
 	printf ("ingrese un DNI que quiera buscar");
@@ -90,7 +94,7 @@ int main (int argc, char **argv) {
 	if (buscar_datos == NULL){
 		printf ("error al abrir el archivo ");
 	}
-	
+
 	else {
 	    char linea [50];
 	    int encontrado = 0;
@@ -109,6 +113,34 @@ int main (int argc, char **argv) {
 	    if (encontrado == 0){
 	        printf ("no se encontro el DNI seleccionado");
 	    }
-
+    fclose (buscar_datos);
 	}
 }
+	void bus_nombre_apellido (char apellido [20], char nombre [20], char DNI [9]) {
+	    char busqueda [9];
+	    printf ("ingrese un nombre o apellido que quiera buscar");
+	    scanf ("%s", busqueda);
+	    FILE *buscar_datos;
+	    buscar_datos = fopen("archivo.txt", "r");
+	    if (buscar_datos == NULL){
+	        printf ("error al abrir el archivo");
+	    }
+	    else {
+	        char linea [50];
+	        int encontrado = 0;
+	        while (fgets(linea, sizeof(linea), buscar_datos) != NULL){
+	            char temp_apellido [20], temp_nombre [20], temp_DNI [9];
+	            sscanf (linea, "%s %s %s",temp_apellido, temp_nombre, temp_DNI);
+	            if (strcmp(temp_nombre, busqueda) == 0 || strcmp(temp_apellido, busqueda) == 0){
+	                printf ("los datos del cliente seleccionado son: apellido = %s, nombre = %s, DNI = %s ", temp_apellido, temp_nombre, temp_DNI);
+	                printf ("\n");
+	                encontrado = 1;
+	                break;
+	            }
+	        }
+	        if (encontrado == 0){
+	            printf ("no se pudo encontrar al cliente");
+	        }
+	   }
+	   fclose (buscar_datos);
+	}

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-
+void ingreso_datos (char apellido [20], char nombre [20], char DNI [9]);
+void buscar_datos (char apellido [20], char nombre [20], char DNI [9]);
 int main (int argc, char **argv) {
     char apellido [20];
 	char nombre [20];
@@ -9,9 +10,28 @@ int main (int argc, char **argv) {
     printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI ");
     scanf ("%d", &opcion);
     while (opcion != 0){
+        switch (opcion){
     
-    if (opcion == 1){
+        case 0:
+            return 0;
+            break;
     
+        case 1:
+            ingreso_datos(apellido, nombre, DNI);
+            break;
+    
+        case 2:
+            buscar_datos(apellido, nombre, DNI);
+            break;
+    
+        }
+        
+        printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI ");
+	    scanf ("%d", &opcion);
+    }
+    return 0;
+}
+    void ingreso_datos (char apellido [20], char nombre [20], char DNI [9]){
 	FILE *ingresar_datos;
 	ingresar_datos = fopen("archivo.txt", "a+");
 	if (ingresar_datos == NULL){
@@ -58,8 +78,9 @@ int main (int argc, char **argv) {
 	fclose(ingresar_datos);
 	
     }
+    
+    void buscar_datos (char apellido [20], char nombre [20], char DNI [9]) {
 	
-	if (opcion == 2){
 	char busqueda [9];
 	printf ("ingrese un DNI que quiera buscar");
 	scanf ("%s", busqueda);
@@ -79,6 +100,7 @@ int main (int argc, char **argv) {
 	         if (strcmp (temp_DNI, busqueda) == 0){
 	             printf ("el nombre del dni buscado es: %s ", temp_nombre);
 	             printf (" y el apellido es: %s ", temp_apellido);
+	             printf ("\n");
 	             encontrado = 1;
 	             break;
     	     }
@@ -89,9 +111,4 @@ int main (int argc, char **argv) {
 	    }
 
 	}
-	}
-	printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI ");
-	scanf ("%d", &opcion);
-    }
-	return 0;
 }

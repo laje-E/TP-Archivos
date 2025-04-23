@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <string.h>
-void ingreso_datos (char apellido [20], char nombre [20], char DNI [9]);
+void ingreso_datos (char apellido [20], char nombre [20], char DNI [9], int coincidencia);
 void buscar_DNI (char apellido [20], char nombre [20], char DNI [9]);
 void bus_nombre_apellido (char apellido [20], char nombre [20], char DNI [9]);
+void validacion (char DNI [9], int *coincidencia);
 int main (int argc, char **argv) {
     char apellido [20];
 	char nombre [20];
 	char DNI [8];
+	int coincidencia = 0;
     int opcion;
     printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI | 3= buscar nombre o apellido");
     scanf ("%d", &opcion);
@@ -18,7 +20,7 @@ int main (int argc, char **argv) {
                 break;
     
             case 1:
-                ingreso_datos(apellido, nombre, DNI);
+                ingreso_datos(apellido, nombre, DNI, coincidencia);
                 break;
     
             case 2:
@@ -35,7 +37,7 @@ int main (int argc, char **argv) {
     }
     return 0;
 }
-    void ingreso_datos (char apellido [20], char nombre [20], char DNI [9]){
+    void ingreso_datos (char apellido [20], char nombre [20], char DNI [9], int coincidencia){
 	FILE *ingresar_datos;
 	ingresar_datos = fopen("archivo.txt", "a+");
 	if (ingresar_datos == NULL){
@@ -52,9 +54,11 @@ int main (int argc, char **argv) {
 	    scanf ("%s", nombre);
 	    
 	    /*es mas simple hacer el DNI como string*/
-	    printf ("ingrese el numero de su DNI ");
-	    scanf ("%s", DNI);
-	    
+	    do {
+    	    printf ("ingrese el numero de su DNI ");
+    	    scanf ("%s", DNI);
+    	    validacion (DNI, &coincidencia);
+	    }while(coincidencia != 0);
 	    
 	    
 	    /* pero si queremos utilizar el DNI como int hay que hacer esto
@@ -144,3 +148,27 @@ int main (int argc, char **argv) {
 	   }
 	   fclose (buscar_datos);
 	}
+
+    void validacion (char DNI [9], int *coincidencia) {
+        char aux_DNI [9];
+        strcpy(aux_DNI, DNI);
+        FILE* buscar_datos;
+        buscar_datos = fopen("archivo.txt", "r");
+        if (buscar_datos == NULL){
+            printf ("ERROR");
+        }
+        
+        else {
+            char linea [50];
+            int coincidencia = 0;
+            while (fgets(linea, sizeof(linea), buscar_datos) != NULL){
+                char temp_DNI [9];
+                sscanf (linea, "%s", temp_DNI);
+                if (strcmp(aux_DNI, temp_DNI) == 0){
+                    coincidencia = 1;
+                    printf ("ERROR. este numero de dni ya existe. ingrese otro /n");
+                    break;
+                }
+            }    
+        }
+    }

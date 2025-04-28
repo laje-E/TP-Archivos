@@ -4,13 +4,17 @@ void ingreso_datos (char apellido [20], char nombre [20], char DNI [9], int coin
 void buscar_DNI (char apellido [20], char nombre [20], char DNI [9]);
 void bus_nombre_apellido (char apellido [20], char nombre [20], char DNI [9]);
 void validacion (char DNI [9], int *coincidencia);
+void mostrar_datos (char apellido [20], char nombre [20], char DNI [9]);
+void orden_nomb_ape (char apellido [20], char nombre [20], char DNI [9]);
+void orden_DNI (char apellido [20], char nombre [20], char DNI [9]);
+void contador(int *contador);
 int main (int argc, char **argv) {
     char apellido [20];
 	char nombre [20];
 	char DNI [8];
 	int coincidencia = 0;
     int opcion;
-    printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI | 3= buscar nombre o apellido");
+    printf ("ingrese que opcion quiere efectuar: 0= salir | 1= ingresar datos | 2= buscar DNI | 3= buscar nombre o apellido | 4= mostrar datos ordenados");
     scanf ("%d", &opcion);
     while (opcion != 0){
         switch (opcion){
@@ -29,6 +33,10 @@ int main (int argc, char **argv) {
             
             case 3:
                 bus_nombre_apellido(apellido, nombre, DNI);
+                break;
+            
+            case 4:
+                mostrar_datos(apellido, nombre, DNI);
                 break;
         }
         
@@ -156,19 +164,85 @@ int main (int argc, char **argv) {
         buscar_datos = fopen("archivo.txt", "r");
         if (buscar_datos == NULL){
             printf ("ERROR");
+            return;
         }
         
         else {
             char linea [50];
-            int coincidencia = 0;
+            *coincidencia = 0;
             while (fgets(linea, sizeof(linea), buscar_datos) != NULL){
-                char temp_DNI [9];
-                sscanf (linea, "%s", temp_DNI);
+                char temp_apellido[20], temp_nombre[20], temp_DNI[9];;
+                sscanf(linea, "%s %s %s", temp_apellido, temp_nombre, temp_DNI);
                 if (strcmp(aux_DNI, temp_DNI) == 0){
-                    coincidencia = 1;
+                    *coincidencia = 1;
                     printf ("ERROR. este numero de dni ya existe. ingrese otro /n");
                     break;
                 }
             }    
         }
+        fclose(buscar_datos);
+    }
+    void mostrar_datos (char apellido [20], char nombre [20], char DNI [9]) {
+        int opcion;
+        printf ("de que forma quiere ordenar el archivo? 1= por nombre y apellido | 2= por DNI ");
+        scanf ("%d", &opcion);
+        switch(opcion){
+            case 1:
+                orden_nomb_ape(apellido, nombre, DNI);
+                break;
+            
+            case 2:
+                orden_DNI (apellido, nombre, DNI);
+                break;
+            
+            default:
+                printf ("la opcion ingresada no es valida ");
+                break;
+        }
+    }
+    void orden_nomb_ape (char apellido [20], char nombre [20], char DNI [9]){
+        FILE *ordenar_datos;
+        ordenar_datos = fopen("archivo.txt", "a+");
+        if (ordenar_datos == NULL){
+            printf ("ERROR");
+        }
+        else{
+            char linea [50];
+            while (fgets(linea, sizeof(linea), ordenar_datos) != NULL){
+                char temp_apellido [20], temp_nombre [20], temp_DNI[9];
+                sscanf(linea, "%s %s %s", temp_apellido, temp_nombre, temp_DNI);
+            }
+        }
+        fclose (ordenar_datos);
+    }
+    void orden_DNI (char apellido [20], char nombre [20], char DNI [9]){
+        FILE *ordenar_datos;
+        ordenar_datos = fopen("archivo.txt", "a+");
+        if (ordenar_datos == NULL){
+            printf ("ERROR");
+        }
+        else{
+            char linea [50];
+            while (fgets(linea, sizeof(linea), ordenar_datos) != NULL){
+                char temp_apellido [20], temp_nombre [20], temp_DNI[9];
+                sscanf(linea, "%s %s %s", temp_apellido, temp_nombre, temp_DNI);
+            }
+        }
+        fclose (ordenar_datos);
+    }
+    
+    void contador(int *contador){
+        FILE *contar_filas;
+        contar_filas = fopen("archivo.txt", "r");
+        if (contar_filas == NULL){
+            printf ("ERROR");
+        }
+        else{
+            *contador = 0;
+            char linea [50];
+            while (fgets(linea, sizeof(linea), contar_filas) != NULL) {
+                contador ++;
+            }
+        }
+        fclose (contar_filas);
     }
